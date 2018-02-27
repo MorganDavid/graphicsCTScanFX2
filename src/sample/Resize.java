@@ -9,28 +9,26 @@ import javafx.stage.Stage;
 import java.awt.image.BufferedImage;
 
 import static sample.Controller.image1;
-import static sample.Controller.image2;
 
 public class Resize {
     @FXML private ImageView imageView;
     private static boolean isResizing = false;
 
     public void initialize(){
-        BufferedImage im = resize(image2,2f,3f);
+        BufferedImage im = resize(image1,5f,5f);
 
         Image img = SwingFXUtils.toFXImage(im, null);
-
-        imageView.setImage(img);
         imageView.setFitHeight(-1);
         imageView.setFitWidth(-1);
+        imageView.setImage(img);
 
     }
 
     public BufferedImage resize(BufferedImage image,float resizeXFactor, float resizeYFactor){
         if(!isResizing) {
-            float newHeight = image.getHeight() * resizeYFactor;
-            float newWidth = image.getWidth() * resizeXFactor;
-
+            int newHeight = (int) (image.getHeight() * resizeYFactor);
+            int newWidth = (int) (image.getWidth() * resizeXFactor);
+            System.out.println("resizing to: " + newHeight + " by " + newWidth);
             //Get image dimensions, and declare loop variables
             int w = image.getWidth(), h = image.getHeight(), i, j, c;
             //Obtain pointer to data for fast processing
@@ -40,19 +38,18 @@ public class Resize {
 
             byte[] newData = Controller.GetImageData(imageToReturn);
 
-            float col;
-            short datum = -1;
             //Shows how to loop through each pixel and colour
             //Try to always use j for loops in y, and i for loops in x
             //as this makes the code more readable
             for (j = 0; j < newHeight-1 ; j++) {
                 for (i = 0; i < newWidth-1 ; i++) {
+                    float y = (float) (j * image.getHeight() / newHeight);
+                    float x = (float) (i * image.getWidth() / newWidth);
+                    int col =  image.getRGB((int)x,(int)y);
                     for (c = 0; c < 3; c++) {
                         //x and y are where we get the colour from.
-                        float y = (float)j * ((float)image.getHeight() / newHeight);
-                        float x = (float)i * ((float)image.getWidth() / newWidth);
-
-                        newData[c + 3 * i + 3 * j*w] = data[c + 3 * ((int) x) + 3 * ((int) y)*w];
+                        //System.out.println("newData Length: " + newData.length);
+                        newData[c + 3 * i + 3 * j * newWidth] =  (byte)col;
                     } // colour loop
                 } // column loop
             } // row loop
