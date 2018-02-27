@@ -22,12 +22,19 @@ public class Histogram {
         return mapping;
     }
 
-    public void buildHistogram(short[][][] cthead,int slice){
-        short datum;
+    public void buildHistogram(short[][][] cthead,int slice,String view){
+        short datum = -1;
         for (int j=0; j<112; j++) {
             for (int i=0; i<256; i++) {
-
-                datum=cthead[slice][j][i];
+                if(view.equals("FRONT")){
+                    datum=cthead[j][slice][i];
+                }
+                if(view.equals("TOP")){
+                    datum=cthead[slice][j][i];
+                }
+                if(view.equals("SIDE")){
+                    datum=cthead[j][i][slice];
+                }
 
                 System.out.println(datum);
 

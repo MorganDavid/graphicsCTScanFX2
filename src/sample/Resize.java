@@ -2,6 +2,7 @@ package sample;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -12,15 +13,28 @@ import static sample.Controller.image1;
 
 public class Resize {
     @FXML private ImageView imageView;
+    @FXML private Slider sldRX;
+    @FXML private Slider sldRY;
+
     private static boolean isResizing = false;
 
     public void initialize(){
-        BufferedImage im = resize(image1,5f,5f);
+        sldRX.valueProperty().addListener((observable, oldValue, newValue) -> {
+            BufferedImage im = resize(image1,(float)sldRX.getValue(),(float)sldRY.getValue());
 
-        Image img = SwingFXUtils.toFXImage(im, null);
-        imageView.setFitHeight(-1);
-        imageView.setFitWidth(-1);
-        imageView.setImage(img);
+            Image img = SwingFXUtils.toFXImage(im, null);
+            imageView.setFitHeight(-1);
+            imageView.setFitWidth(-1);
+            imageView.setImage(img);
+        });
+        sldRY.valueProperty().addListener((observable, oldValue, newValue) -> {
+            BufferedImage im = resize(image1,(float)sldRX.getValue(),(float)sldRY.getValue());
+
+            Image img = SwingFXUtils.toFXImage(im, null);
+            imageView.setFitHeight(-1);
+            imageView.setFitWidth(-1);
+            imageView.setImage(img);
+        });
 
     }
 
@@ -41,8 +55,8 @@ public class Resize {
             //Shows how to loop through each pixel and colour
             //Try to always use j for loops in y, and i for loops in x
             //as this makes the code more readable
-            for (j = 0; j < newHeight-1 ; j++) {
-                for (i = 0; i < newWidth-1 ; i++) {
+            for (j = 0; j < newHeight; j++) {
+                for (i = 0; i < newWidth ; i++) {
                     float y = (float) (j * image.getHeight() / newHeight);
                     float x = (float) (i * image.getWidth() / newWidth);
                     int col =  image.getRGB((int)x,(int)y);
@@ -65,35 +79,4 @@ public class Resize {
     }
 
 
-    public void setStageAndSetupListeners(Stage stage) {
-        stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            if(!Double.isNaN(oldVal.doubleValue())&&!Double.isNaN(newVal.doubleValue())) {
-
-             /*   Double xScale = (Double) oldVal / (Double) newVal;
-
-                BufferedImage im = resize(image1,xScale.floatValue(),1);
-                if(im.getHeight()!=-1) {
-                    Image img = SwingFXUtils.toFXImage(im, null);
-                    imageView.setFitHeight(img.getHeight());
-                    imageView.setFitWidth(img.getWidth());
-                    imageView.setImage(img);
-                }*/
-            }
-        });
-
-      /*  stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-            if(!Double.isNaN(oldVal.doubleValue())&&!Double.isNaN(newVal.doubleValue())) {
-                Double yScale = (Double) oldVal / (Double) newVal;
-
-                BufferedImage im = resize(image1,1,yScale.floatValue());
-                Image img = SwingFXUtils.toFXImage(im,null);
-                imageView.setImage(img);
-
-
-
-                System.out.println("y:" + yScale);
-            }
-
-        });*/
-    }
 }

@@ -35,6 +35,7 @@ public class Controller {
     @FXML private ImageView frontView;
 
     @FXML private CheckBox chkEqualise;
+
     static BufferedImage image1, image2, image3; //storing the image in memory
     short cthead[][][]; //store the 3D volume data set
     short min, max; //min/max value in the 3D volume data set
@@ -167,9 +168,10 @@ public class Controller {
                 } // colour loop
             } // column loop
         } // row loop
+
         if(view.equals("TOP") && chkEqualise.isSelected()) {
             Histogram hist = new Histogram();
-            hist.buildHistogram(cthead,slice);
+            hist.buildHistogram(cthead,slice,view);
             System.out.println("\n equalise" + Arrays.toString(hist.equalise()));
         }
        // System.out.println(Arrays.toString(hist.getHistogram()));
@@ -251,10 +253,6 @@ public class Controller {
 
             Scene scene = new Scene(fxmlLoader.load(), 397, 397);
             Stage stage = new Stage();
-
-            Resize r = (Resize)fxmlLoader.getController();
-            r.setStageAndSetupListeners(stage);
-
 
             stage.setTitle("Resize View");
             stage.setScene(scene);
