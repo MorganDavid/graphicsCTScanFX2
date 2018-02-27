@@ -59,10 +59,11 @@ public class Resize {
                 for (i = 0; i < newWidth ; i++) {
                     float y = (float) (j * image.getHeight() / newHeight);
                     float x = (float) (i * image.getWidth() / newWidth);
-                    int col =  image.getRGB((int)x,(int)y);
+
                     for (c = 0; c < 3; c++) {
                         //x and y are where we get the colour from.
                         //System.out.println("newData Length: " + newData.length);
+                        int col =  data[(int) (c + 3 * x + 3 * y * w)];
                         newData[c + 3 * i + 3 * j * newWidth] =  (byte)col;
                     } // colour loop
                 } // column loop
