@@ -19,7 +19,6 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.*;
-import java.util.Arrays;
 
 public class Controller {
 
@@ -230,7 +229,7 @@ public class Controller {
                     }
                 }
 
-                datum = myMaximum;
+                datum = (short) myMaximum;
 
                 col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
                 for (c=0; c<3; c++) {
@@ -240,8 +239,6 @@ public class Controller {
                 } // colour loop
             } // column loop
         } // row loop
-
-
 
         return image;
     }
