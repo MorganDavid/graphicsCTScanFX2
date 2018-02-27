@@ -145,28 +145,29 @@ public class Controller {
         float col;
         short datum=-1;
 
-        for (j=0; j<h; j++) {
-            for (i=0; i<w; i++) {
-                if(view.equals("FRONT")){
-                    datum=cthead[j][slice][i];
-                }
-                if(view.equals("TOP")){
-                    datum=cthead[slice][j][i];
-                }
-                if(view.equals("SIDE")){
-                    datum=cthead[j][i][slice];
-                }
+            for (j = 0; j < h; j++) {
+                for (i = 0; i < w; i++) {
+                    if (view.equals("FRONT")) {
+                        datum = cthead[j][slice][i];
+                    }
+                    if (view.equals("TOP")) {
+                        datum = cthead[slice][j][i];
+                    }
+                    if (view.equals("SIDE")) {
+                        datum = cthead[j][i][slice];
+                    }
 
 
-                //calculate the colour by performing a mapping from [min,max] -> [0,255]
-                col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
-                for (c=0; c<3; c++) {
-                    //and now we are looping through the bgr components of the pixel
-                    //set the colour component c of pixel (i,j)
-                    data[c+3*i+3*j*w]=(byte) col;
-                } // colour loop
-            } // column loop
-        } // row loop
+                    //calculate the colour by performing a mapping from [min,max] -> [0,255]
+                    col = (255.0f * ((float) datum - (float) min) / ((float) (max - min)));
+                    for (c = 0; c < 3; c++) {
+                        //and now we are looping through the bgr components of the pixel
+                        //set the colour component c of pixel (i,j)
+                        data[c + 3 * i + 3 * j * w] = (byte) col;
+                    } // colour loop
+                } // column loop
+            } // row loop
+
         if(view.equals("TOP") && chkEqualise.isSelected()) {
             Histogram hist = new Histogram();
             hist.buildHistogram(cthead,slice);

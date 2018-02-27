@@ -45,8 +45,9 @@ public class Resize {
                 for (i = 0; i < newWidth-1 ; i++) {
                     float y = (float) (j * image.getHeight() / newHeight);
                     float x = (float) (i * image.getWidth() / newWidth);
-                    int col =  image.getRGB((int)x,(int)y);
+
                     for (c = 0; c < 3; c++) {
+                        int col =  data[c + 3 * (int)x + 3 * (int)y * w];
                         //x and y are where we get the colour from.
                         //System.out.println("newData Length: " + newData.length);
                         newData[c + 3 * i + 3 * j * newWidth] =  (byte)col;
@@ -63,6 +64,7 @@ public class Resize {
             return alreadyRunning;
         }
     }
+
 
 
     public void setStageAndSetupListeners(Stage stage) {
