@@ -58,13 +58,24 @@
                                 <String fx:value="Top" />
                              </FXCollections>
                           </items>
+                     <VBox.margin>
+                        <Insets bottom="3.0" />
+                     </VBox.margin>
                   </ChoiceBox>
                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#mipButton" text="Perform MIP">
                      <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets bottom="3.0" />
                      </VBox.margin>
                   </Button>
-                  <Button layoutX="10.0" layoutY="40.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openResizeWindow" text="Show Big" />
+                  <Button layoutX="10.0" layoutY="40.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openResizeWindow" text="Show Big">
+                     <VBox.margin>
+                        <Insets bottom="3.0" />
+                     </VBox.margin></Button>
+                  <CheckBox fx:id="chkEqualise" mnemonicParsing="false" text="Equalise">
+                     <VBox.margin>
+                        <Insets bottom="3.0" />
+                     </VBox.margin>
+                  </CheckBox>
                </children>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -22,6 +19,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.*;
+import java.util.Arrays;
 
 public class Controller {
 
@@ -36,7 +34,7 @@ public class Controller {
     @FXML private ImageView sideView;
     @FXML private ImageView frontView;
 
-
+    @FXML private CheckBox chkEqualise;
     static BufferedImage image1, image2, image3; //storing the image in memory
     short cthead[][][]; //store the 3D volume data set
     short min, max; //min/max value in the 3D volume data set
@@ -159,7 +157,7 @@ public class Controller {
                     datum=cthead[j][i][slice];
                 }
 
-                if(datum==-1000.123){throw new RuntimeException("Invalid view input to getSlice");}
+
                 //calculate the colour by performing a mapping from [min,max] -> [0,255]
                 col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
                 for (c=0; c<3; c++) {
@@ -169,7 +167,12 @@ public class Controller {
                 } // colour loop
             } // column loop
         } // row loop
-
+        if(view.equals("TOP") && chkEqualise.isSelected()) {
+            Histogram hist = new Histogram();
+            hist.buildHistogram(cthead,slice);
+            System.out.println("\n equalise" + Arrays.toString(hist.equalise()));
+        }
+       // System.out.println(Arrays.toString(hist.getHistogram()));
         return image;
     }
 
@@ -207,7 +210,7 @@ public class Controller {
         //as this makes the code more readable
         for (j=0; j<h; j++) {
             for (i=0; i<w; i++) {
-                float myMaximum = -10000000f;
+                short myMaximum = Short.MIN_VALUE;
 
                 for(int y = 0; y < cthead.length; y++){
                     short z = -1;
@@ -227,7 +230,7 @@ public class Controller {
                     }
                 }
 
-                datum = (short) myMaximum;
+                datum = myMaximum;
 
                 col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
                 for (c=0; c<3; c++) {
@@ -237,6 +240,8 @@ public class Controller {
                 } // colour loop
             } // column loop
         } // row loop
+
+
 
         return image;
     }

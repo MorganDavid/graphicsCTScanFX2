@@ -9,17 +9,20 @@ import javafx.stage.Stage;
 import java.awt.image.BufferedImage;
 
 import static sample.Controller.image1;
+import static sample.Controller.image2;
 
 public class Resize {
     @FXML private ImageView imageView;
     private static boolean isResizing = false;
 
     public void initialize(){
-        BufferedImage im = resize(image1,2f,2f);
+        BufferedImage im = resize(image2,2f,3f);
 
         Image img = SwingFXUtils.toFXImage(im, null);
 
         imageView.setImage(img);
+        imageView.setFitHeight(-1);
+        imageView.setFitWidth(-1);
 
     }
 
@@ -46,11 +49,10 @@ public class Resize {
                 for (i = 0; i < newWidth-1 ; i++) {
                     for (c = 0; c < 3; c++) {
                         //x and y are where we get the colour from.
-                        float y = (float)j * (float)image.getHeight() / (float)newHeight;
-                        float x = (float)i * (float)image.getWidth() / (float)newWidth;
-                        col = data[c + 3 * ((int) x) + 3 * ((int) y) * w];
-                        System.out.println("newData Length: " + newData.length);
-                        newData[c + 3 * i + 3 * j * w] = (byte) col;
+                        float y = (float)j * ((float)image.getHeight() / newHeight);
+                        float x = (float)i * ((float)image.getWidth() / newWidth);
+
+                        newData[c + 3 * i + 3 * j*w] = data[c + 3 * ((int) x) + 3 * ((int) y)*w];
                     } // colour loop
                 } // column loop
             } // row loop
