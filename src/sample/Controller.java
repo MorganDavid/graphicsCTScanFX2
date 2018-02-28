@@ -35,8 +35,12 @@ public class Controller {
     @FXML private ImageView frontView;
 
     @FXML private CheckBox chkEqualise;
+
+    @FXML private Button btnThumbnails;
+
     static BufferedImage image1, image2, image3; //storing the image in memory
     short cthead[][][]; //store the 3D volume data set
+    float cthead_equalised[][][];
     short min, max; //min/max value in the 3D volume data set
 
 
@@ -59,6 +63,7 @@ public class Controller {
         int b1, b2; //data is wrong Endian (check wikipedia) for Java so we need to swap the bytes around
 
         cthead = new short[113][256][256]; //allocate the memory - note this is fixed for this data set
+        cthead_equalised = new float[113][256][256]; //allocate the memory - note this is fixed for this data set
         //loop through the data reading it in
         for (k=0; k<113; k++) {
             for (j=0; j<256; j++) {
@@ -88,6 +93,18 @@ public class Controller {
 
         makeEventListeners();
 
+        Histogram hist = new Histogram();
+        hist.buildHistogram(cthead);
+        hist.equalise();
+        for (j=0; j<cthead.length; j++) {
+            for (i = 0; i < cthead[0].length; i++) {
+                for (int z = 0; z < cthead[0][0].length; z++) {
+                    float s = hist.getMapping(cthead[j][i][z]+1117);
+                    cthead_equalised[j][i][z] = (s);
+                }
+            }
+        }
+
     }
 
     private void makeEventListeners(){
@@ -106,6 +123,10 @@ public class Controller {
             Image img = SwingFXUtils.toFXImage(image3,null);
             frontView.setImage(img);
         });
+
+    }
+
+    public void openThumbnail(){
 
     }
 
@@ -137,29 +158,42 @@ public class Controller {
      * @param image The image reference to put the image in.
      * @return the final image.
      */
-    private BufferedImage getSlice(int slice, String view, BufferedImage image){
+    public BufferedImage getSlice(int slice, String view, BufferedImage image){
         //Get image dimensions, and declare loop variables
         int w=image.getWidth(), h=image.getHeight(), i, j, c, k;
         //Obtain pointer to data for fast processing
         byte[] data = GetImageData(image);
         float col;
-        short datum=-1;
-
+        float datum=-1;
+        boolean isEqualising = chkEqualise.isSelected();
         for (j=0; j<h; j++) {
             for (i=0; i<w; i++) {
                 if(view.equals("FRONT")){
-                    datum=cthead[j][slice][i];
+                    if(!isEqualising) {
+                        datum = cthead[j][slice][i];
+                    }else{
+                        datum = cthead_equalised[j][slice][i];
+                    }
                 }
                 if(view.equals("TOP")){
-                    datum=cthead[slice][j][i];
+                    if(!isEqualising) {
+                        datum = cthead[slice][j][i];
+                    }else{
+                        datum = cthead_equalised[slice][j][i];
+                    }
                 }
                 if(view.equals("SIDE")){
-                    datum=cthead[j][i][slice];
+                    if(!isEqualising) {
+                        datum = cthead[j][i][slice];
+                    }else{
+                        datum = cthead_equalised[j][i][slice];
+                    }
                 }
-
-
-                //calculate the colour by performing a mapping from [min,max] -> [0,255]
-                col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
+                if(chkEqualise.isSelected()){
+                    col=datum;
+                }else {
+                    col = (255.0f * ((float) datum - (float) min) / ((float) (max - min)));
+                }
                 for (c=0; c<3; c++) {
                     //and now we are looping through the bgr components of the pixel
                     //set the colour component c of pixel (i,j)
@@ -167,11 +201,6 @@ public class Controller {
                 } // colour loop
             } // column loop
         } // row loop
-        if(view.equals("TOP") && chkEqualise.isSelected()) {
-            Histogram hist = new Histogram();
-            hist.buildHistogram(cthead,slice,view);
-            System.out.println("\n equalise" + Arrays.toString(hist.equalise()));
-        }
        // System.out.println(Arrays.toString(hist.getHistogram()));
         return image;
     }
@@ -225,7 +254,6 @@ public class Controller {
                     }
 
                     if(z > myMaximum){
-
                         myMaximum = z;
                     }
                 }

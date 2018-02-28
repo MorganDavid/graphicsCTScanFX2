@@ -71,6 +71,11 @@
                      <VBox.margin>
                         <Insets bottom="3.0" />
                      </VBox.margin></Button>
+                  <Button fx:id="btnThumbnail" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openThumbnail" text="Thumbnail">
+                     <VBox.margin>
+                        <Insets bottom="3.0" />
+                     </VBox.margin>
+                  </Button>
                   <CheckBox fx:id="chkEqualise" mnemonicParsing="false" text="Equalise">
                      <VBox.margin>
                         <Insets bottom="3.0" />
