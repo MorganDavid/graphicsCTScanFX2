@@ -39,9 +39,9 @@ public class Controller {
     @FXML private Button btnThumbnails;
 
     static BufferedImage image1, image2, image3; //storing the image in memory
-    short cthead[][][]; //store the 3D volume data set
-    float cthead_equalised[][][];
-    short min, max; //min/max value in the 3D volume data set
+    static short cthead[][][]; //store the 3D volume data set
+    static float cthead_equalised[][][];
+    static short min, max; //min/max value in the 3D volume data set
 
 
 
@@ -127,7 +127,20 @@ public class Controller {
     }
 
     public void openThumbnail(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("thumbnails.fxml"));
 
+            Scene scene = new Scene(fxmlLoader.load(), 700,700);
+            Stage stage = new Stage();
+
+            stage.setTitle("Thumbnail View");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't open resize_nearestNeighbour window!");
+        }
     }
 
     public void mipButton(){
@@ -158,7 +171,7 @@ public class Controller {
      * @param image The image reference to put the image in.
      * @return the final image.
      */
-    public BufferedImage getSlice(int slice, String view, BufferedImage image){
+    private BufferedImage getSlice(int slice, String view, BufferedImage image){
         //Get image dimensions, and declare loop variables
         int w=image.getWidth(), h=image.getHeight(), i, j, c, k;
         //Obtain pointer to data for fast processing
