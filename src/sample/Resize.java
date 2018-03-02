@@ -22,18 +22,26 @@ public class Resize {
     @FXML private Slider sldRX;
     @FXML private Slider sldRY;
     @FXML private CheckBox chkBilinear;
-    private static boolean isResizing = false;
+    public static int index = -1;
+
+    private static BufferedImage thisImage;
+
 
     public void initialize(){
-
-        System.out.println("interpolate" + interpolate(210,222,535,534,5));
+        System.out.println("index is: " + index);
+        //if we have oppened from thumbnail
+        if(index == -1){
+            thisImage=image1;
+        }else{
+            thisImage=Thumbnails.arr.get(index);
+        }
 
         sldRX.valueProperty().addListener((observable, oldValue, newValue) -> {
             BufferedImage im;
             if(!chkBilinear.isSelected()) {
-                im = resize(image1,(float) sldRX.getValue(), (float) sldRY.getValue());
+                im = resize(thisImage,(float) sldRX.getValue(), (float) sldRY.getValue());
             }else{
-                im = bilinear(image1, (float) sldRX.getValue(), (float) sldRY.getValue());
+                im = bilinear(thisImage, (float) sldRX.getValue(), (float) sldRY.getValue());
             }
             Image img = SwingFXUtils.toFXImage(im, null);
             imageView.setFitHeight(-1);
@@ -43,9 +51,9 @@ public class Resize {
         sldRY.valueProperty().addListener((observable, oldValue, newValue) -> {
             BufferedImage im;
             if(!chkBilinear.isSelected()) {
-                im = resize(image1,(float) sldRX.getValue(), (float) sldRY.getValue());
+                im = resize(thisImage,(float) sldRX.getValue(), (float) sldRY.getValue());
             }else{
-                im = bilinear(image1, (float) sldRX.getValue(), (float) sldRY.getValue());
+                im = bilinear(thisImage, (float) sldRX.getValue(), (float) sldRY.getValue());
             }
 
             Image img = SwingFXUtils.toFXImage(im, null);
@@ -53,9 +61,11 @@ public class Resize {
             imageView.setFitWidth(-1);
             imageView.setImage(img);
         });
+
+
     }
 
-    public BufferedImage resize(BufferedImage image,float resizeXFactor, float resizeYFactor){
+    public static BufferedImage resize(BufferedImage image,float resizeXFactor, float resizeYFactor){
             int newHeight = (int) (image.getHeight() * resizeYFactor);
             int newWidth = (int) (image.getWidth() * resizeXFactor);
             System.out.println("resizing to: " + newHeight + " by " + newWidth);
@@ -92,7 +102,7 @@ public class Resize {
      * one dimensional interpolation. Can be used for x or y, just imagine the y being x everywhere.
      * @return
      */
-    public float interpolate(float v1, float v2, int y1, int y2, int y){
+    public float interpolate(float v1, float v2, int y1, int y2, int    y){
        // Vector2D v = ( v1.add((v2.subtract(v1))) ).multiplyScalar((y-v1.getY())/(v2.getY()-v1.getY()));
         float v = (v1+(v2-v1)*(y-y1)/(y2-y1));
         return v;
@@ -105,25 +115,24 @@ public class Resize {
 
         for (j = 0; j < newImage.getHeight()-1-resizeYFactor; j+=resizeYFactor) {
             for (i = 0; i < newImage.getWidth()-1-resizeXFactor; i+=resizeXFactor) {
-
-
                 for(int z = 0; z<resizeXFactor; z++){
                     for (c = 0; c < 3; c++) {
-                        float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())];
-                        float v2 = data[(int) (c + 3 * (i+resizeXFactor) + 3 * j * newImage.getWidth())];
+                        float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())]&255;
+                        float v2 = data[(int) (c + 3 * (i+resizeXFactor) + 3 * j * newImage.getWidth())]&255;
                         float col = interpolate(v1,v2,(int)i,(int)(i+resizeXFactor), (int) (z+i));
+
                         if(c==0 && j<550 && i<550) System.out.println("i: " + i + " j: " + j + " z: " + z + " v1: " + v1 + " v2: " + v2 + " interpolated byte: " + (byte)col);
-                        data[(int) (c + 3 * (z+i) + 3 * j * newImage.getWidth())]=(byte)col;
+                        data[(int) (0 + 3 * (z+i) + 3 * j * newImage.getWidth())]=(byte)col;
                     }
 
                 }
 
                 for(int z = 0; z<resizeYFactor; z++){
                     for (c = 0; c < 3; c++) {
-                        float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())];
-                        float v2 = data[(int) (c + 3 * i + 3 * (j + resizeYFactor) * newImage.getWidth())];
+                        float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())]&255;
+                        float v2 = data[(int) (c + 3 * i + 3 * (j + resizeYFactor) * newImage.getWidth())]&255;
                         float col = interpolate(v1, v2, (int)j, (int) (j + resizeYFactor), (int)(z + j));
-                        data[(int) (c + 3 * i + 3 * (j + z) * newImage.getWidth())] = (byte) col;
+                        data[(int) (c + 3 * i + 3 * (j + z) * newImage.getWidth())] = (byte) (col);
                     }
                 }
             }
@@ -134,8 +143,8 @@ public class Resize {
                 if(j%resizeYFactor==0 && i%resizeXFactor!=0) {
                     for(int z = 0; z<resizeYFactor; z++){
                         for (c = 0; c < 3; c++) {
-                            float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())];
-                            float v2 = data[(int) (c + 3 * i + 3 * (j + resizeYFactor) * newImage.getWidth())];
+                            float v1 = data[(int) (c + 3 * i + 3 * j * newImage.getWidth())]&255;
+                            float v2 = data[(int) (c + 3 * i + 3 * (j + resizeYFactor) * newImage.getWidth())]&255;
                             float col = interpolate(v1, v2, (int)j, (int) (j + resizeYFactor), (int)(z + j));
                             data[(int) (c + 3 * i + 3 * (j + z) * newImage.getWidth())] = (byte) (col);
                         }
@@ -165,7 +174,7 @@ public class Resize {
             for (i = 0; i < image.getWidth(); i++) {
                 for (c = 0; c < 3; c++) {
                     float col = data[(int) (c + 3 * i + 3 * j * w)];
-                    newData[(int) (c + 3 * (int)(i*Math.round((float)resizeXFactor)) + 3 * (int)(j*Math.round(resizeYFactor)) * newWidth)] = (byte) col;
+                    newData[(int) (c + 3 * (int)(i*resizeXFactor) + 3 * (int)j*Math.round(resizeYFactor) * newWidth)] = (byte) col;
                 }
             }
         }

@@ -36,14 +36,11 @@ public class Controller {
 
     @FXML private CheckBox chkEqualise;
 
-    @FXML private Button btnThumbnails;
-
     static BufferedImage image1, image2, image3; //storing the image in memory
     static short cthead[][][]; //store the 3D volume data set
     static float cthead_equalised[][][];
     static short min, max; //min/max value in the 3D volume data set
-
-
+    public static String choice = "ERROR";
 
     public void initialize() throws IOException {
         File file = new File("CThead");
@@ -127,19 +124,22 @@ public class Controller {
     }
 
     public void openThumbnail(){
+        choice = choiceBoxMip.getValue().toString().toUpperCase();
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("thumbnails.fxml"));
 
-            Scene scene = new Scene(fxmlLoader.load(), 700,700);
+            Scene scene = new Scene(fxmlLoader.load(), 1000,600);
             Stage stage = new Stage();
+
+            //get status of choice box
 
             stage.setTitle("Thumbnail View");
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Couldn't open resize_nearestNeighbour window!");
+            throw new RuntimeException("Couldn't open Thumbnail window!");
         }
     }
 

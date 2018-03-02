@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="sample.Thumbnails"
-            prefHeight="400.0" prefWidth="600.0">
-    <ImageView fx:id="imageView" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" smooth="false">
-        <image>
-            <Image url="@../../ImagePlaceholder.jpg" />
-        </image>
-    </ImageView>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Thumbnails">
+   <children>
+      <FlowPane fx:id="flowPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="2.0" minWidth="-Infinity" prefHeight="200.0" prefWidth="1000.0" vgap="2.0">
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </FlowPane>
+   </children>
 </AnchorPane>

@@ -15,8 +15,6 @@ public class Main extends Application {
         primaryStage.setTitle("CTHead");
         primaryStage.setScene(new Scene(root, 700, 550));
         primaryStage.show();
-
-
     }
 
 

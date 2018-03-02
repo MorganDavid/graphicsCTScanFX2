@@ -23,7 +23,6 @@ public class Histogram {
         float t_i = 0;
         for (int i=0; i<=grey_levels; i++) {
             t_i+=histogram[i];
-            //mapping[i] = Math.max(0,(3365*t_i)/(256*256*113));
             mapping[i] = 255*(t_i/(size));
             System.out.println(t_i);
         }
