@@ -9,7 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.awt.image.BufferedImage;
@@ -36,7 +35,19 @@ public class Thumbnails {
 
         arr = makeThumb(Controller.choice);
 
-        for(int i = 0; i < ((Controller.choice.toUpperCase().equals("TOP")) ? 113 : 255); i++){
+        int noOfThumbs = -1;
+        if(Controller.choice.toUpperCase().equals("TOP")){
+            noOfThumbs = cthead.length;
+        }
+        if(Controller.choice.toUpperCase().equals("SIDE")){
+            noOfThumbs = cthead[0].length;
+        }
+        if(Controller.choice.toUpperCase().equals("FRONT")){
+            noOfThumbs = cthead[0][0].length;
+        }
+
+
+        for(int i = 0; i < noOfThumbs; i++){
 
             //resize the image before adding it to view.
             BufferedImage imgToAdd = Resize.resize(arr.get(i),0.25f,0.25f);
@@ -80,9 +91,9 @@ public class Thumbnails {
     public List<BufferedImage> makeThumb(String view) {
         ArrayList<BufferedImage> imageArr = new ArrayList<>();
 
-        //Get image dimensions, and declare loop variables
+        //Get image dimensions, and declare loop variables based on view.
         int w=cthead[0][0].length,h=cthead[0].length, i, j, c;
-        int d = cthead[0][0].length;
+        int d = cthead[0][0].length; // d = number of slices for this view.
         if(view.equals("FRONT")){//TODO: make sure these are right.
             h=cthead.length;
             d=cthead[0].length;
@@ -98,10 +109,8 @@ public class Thumbnails {
             d=cthead[0][0].length;
             w=cthead[0].length;
         }
-        //Obtain pointer to data for fast processing
-        //Shows how to loop through each pixel and colour
-        //Try to always use j for loops in y, and i for loops in x
-        //as this makes the code more readable
+
+        //Works like an inverted mip. Runs through all slices in the top level loop, then the second two loops get each pixel for each slice. Then add that slice to the imageArr
         for(int y = 0; y < d; y++) {
             BufferedImage image = new BufferedImage(w,h,BufferedImage.TYPE_3BYTE_BGR);
             byte[] data = GetImageData(image);
@@ -121,8 +130,6 @@ public class Thumbnails {
 
                     col = (255.0f * ((float) datum - (float) min) / ((float) (max - min)));
                     for (c = 0; c < 3; c++) {
-                        //and now we are looping through the bgr components of the pixel
-                        //set the colour component c of pixel (i,j)
                         data[c + 3 * i + 3 * j * w] = (byte) col;
                     } // colour loop
 

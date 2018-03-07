@@ -1,12 +1,12 @@
 package sample;
 
+import javax.naming.ldap.Control;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public class Histogram {
     static float[] histogram, mapping;
-    int h=112,w=256;
-    static int grey_levels = 3365;
+    static int grey_levels = Controller.max-Controller.min;
 
     public Histogram() {
         histogram = new float[grey_levels+1];
@@ -19,7 +19,8 @@ public class Histogram {
     }
 
     static public float[] equalise(){
-        float size = 256*256*113;
+        short[][][] cthead = Controller.cthead;
+        float size = cthead[0].length*cthead[0][0].length*cthead.length;
         float t_i = 0;
         for (int i=0; i<=grey_levels; i++) {
             t_i+=histogram[i];
@@ -30,16 +31,15 @@ public class Histogram {
         return mapping;
     }
 
+    //Builds a histogram from the whole data set and puts the result in the histgoram variable.
     static public void buildHistogram(short[][][] cthead){
-        short datum = -1;
+        short datum;
         for (int j=0; j<cthead.length; j++) {
             for (int i=0; i<cthead[0].length; i++) {
                 for(int z=0; z<cthead[0][0].length; z++) {
                     datum = cthead[j][z][i];
 
-               //     System.out.println(datum);
-
-                    histogram[datum + 1117]++;//+1117 to make negative values positive from values 0 to 3365
+                    histogram[datum + (Math.abs(Controller.min))]++;//+1117 to make negative values positive from values 0 to 3365
                 }
             } // column loop
         } // row loop

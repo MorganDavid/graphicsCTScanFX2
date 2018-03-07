@@ -50,36 +50,46 @@
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <ChoiceBox fx:id="choiceBoxMip" prefWidth="150.0" value="Front">
-                          <items>
-                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Front" />
-                                <String fx:value="Side" />
-                                <String fx:value="Top" />
-                             </FXCollections>
-                          </items>
+                  <VBox prefHeight="93.0" prefWidth="100.0">
+                     <children>
+                        <ChoiceBox fx:id="choiceBoxMip" prefWidth="150.0" value="Front">
+                                <items>
+                                   <FXCollections fx:factory="observableArrayList">
+                                      <String fx:value="Front" />
+                                      <String fx:value="Side" />
+                                      <String fx:value="Top" />
+                                   </FXCollections>
+                                </items>
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </VBox.margin>
+                           <tooltip>
+                              <Tooltip text="View to perform mip and thumbnails on." />
+                           </tooltip>
+                        </ChoiceBox>
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#mipButton" text="Perform MIP">
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button fx:id="btnThumbnail" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openThumbnail" text="Thumbnail">
+                           <VBox.margin>
+                              <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Button layoutX="10.0" layoutY="40.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openResizeWindow" text="Enlarge Top">
                      <VBox.margin>
-                        <Insets bottom="3.0" />
-                     </VBox.margin>
-                  </ChoiceBox>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#mipButton" text="Perform MIP">
-                     <VBox.margin>
-                        <Insets bottom="3.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button layoutX="10.0" layoutY="40.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openResizeWindow" text="Show Big">
-                     <VBox.margin>
-                        <Insets bottom="3.0" />
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                      </VBox.margin></Button>
-                  <Button fx:id="btnThumbnail" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openThumbnail" text="Thumbnail">
-                     <VBox.margin>
-                        <Insets bottom="3.0" />
-                     </VBox.margin>
-                  </Button>
                   <CheckBox fx:id="chkEqualise" mnemonicParsing="false" text="Equalise">
                      <VBox.margin>
-                        <Insets bottom="3.0" />
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                      </VBox.margin>
+                     <tooltip>
+                        <Tooltip text="Perform histogram equalisation on all slider views. " />
+                     </tooltip>
                   </CheckBox>
                </children>
                <HBox.margin>

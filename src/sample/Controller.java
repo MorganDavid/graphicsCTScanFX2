@@ -75,10 +75,6 @@ public class Controller {
                 }
             }
         }
-        System.out.println(min+" "+max); //diagnostic - for CThead this should be -1117, 2248
-        //(i.e. there are 3366 levels of grey (we are trying to display on 256 levels of grey)
-        //therefore histogram equalization would be a good thing
-
 
         image1=new BufferedImage(256, 256, BufferedImage.TYPE_3BYTE_BGR);
         image2=new BufferedImage(256, 112, BufferedImage.TYPE_3BYTE_BGR);
@@ -181,6 +177,7 @@ public class Controller {
         boolean isEqualising = chkEqualise.isSelected();
         for (j=0; j<h; j++) {
             for (i=0; i<w; i++) {
+                //set which slice we loop through based on the view paramter.
                 if(view.equals("FRONT")){
                     if(!isEqualising) {
                         datum = cthead[j][slice][i];
@@ -202,19 +199,17 @@ public class Controller {
                         datum = cthead_equalised[j][i][slice];
                     }
                 }
+                //If we are equalising, the data is already converted to rgb, so no need to do it again.
                 if(chkEqualise.isSelected()){
                     col=datum;
                 }else {
                     col = (255.0f * ((float) datum - (float) min) / ((float) (max - min)));
                 }
                 for (c=0; c<3; c++) {
-                    //and now we are looping through the bgr components of the pixel
-                    //set the colour component c of pixel (i,j)
                     data[c+3*i+3*j*w]=(byte) col;
                 } // colour loop
             } // column loop
         } // row loop
-       // System.out.println(Arrays.toString(hist.getHistogram()));
         return image;
     }
 
@@ -247,14 +242,25 @@ public class Controller {
         byte[] data = GetImageData(image);
         float col;
         short datum;
-        //Shows how to loop through each pixel and colour
-        //Try to always use j for loops in y, and i for loops in x
-        //as this makes the code more readable
+        int depth = -1;
+
+        //Sets how far the ray should go back into the data based on the view selected.
+        if (view.equals("FRONT")) {
+            depth = cthead[0][0].length;
+        }
+        if (view.equals("SIDE")) {
+            depth = cthead[0][0].length;
+        }
+        if (view.equals("TOP")) {
+            depth = cthead.length;
+        }
+
+        //First two loops through every pixel on each slice, the internal loop finds the maximum of that pixel.
         for (j=0; j<h; j++) {
             for (i=0; i<w; i++) {
                 short myMaximum = Short.MIN_VALUE;
 
-                for(int y = 0; y < cthead.length; y++){
+                for(int y = 0; y < depth; y++){
                     short z = -1;
                     if(view.equals("FRONT")){
                         z=cthead[j][y][i];
@@ -271,7 +277,7 @@ public class Controller {
                     }
                 }
 
-                datum = (short) myMaximum;
+                datum = myMaximum;
 
                 col=(255.0f*((float)datum-(float)min)/((float)(max-min)));
                 for (c=0; c<3; c++) {
